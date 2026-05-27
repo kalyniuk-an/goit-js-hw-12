@@ -3,7 +3,7 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 
 const gallery = document.querySelector(".gallery");
 const loader = document.querySelector(".loader");
-const loaderMore = document.querySelector(".loader-more");
+const loaderMore = document.querySelector(".load-more");
 
 const lightbox = new SLBox(".gallery a", {
   captionsData: "alt",
@@ -31,7 +31,7 @@ export function createGallery(images) {
   const markup = images
     .map(createGalleryItem)
     .join("");
-  gallery.innerHTML = markup;
+  gallery.insertAdjacentHTML("beforeend", markup);
   lightbox.refresh();
 }
 
