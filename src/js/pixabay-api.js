@@ -12,12 +12,10 @@ export async function getImagesByQuery(query, page = 1) {
   });
   const URL = `https://pixabay.com/api/`;
 
-  // return await axios.get(URL, { params: searchParam })
-  //   .then(response => response.data);
-  
-  const data = await axios.get(URL, { params: searchParam });
-  // console.log('API response:', data);
-  return data.data;
+  return await (await axios.get(URL, { params: searchParam })).data;
+   
+  // const data = await axios.get(URL, { params: searchParam });
+  //   return data.data;
   
 }
 

@@ -16,11 +16,9 @@ loadMoreButton.addEventListener('click', handleLoadMore);
 async function handleSearch(event) {
   event.preventDefault();
 
-  const query = event.target.elements["search-text"].value.trim();
+  currentQuery = event.target.elements["search-text"].value.trim();
 
-  console.log('Search query:', query);
-
-  if (!query) {
+  if (!currentQuery) {
     iziToast.info({
       title: 'Info',
       message: 'Please enter a search query.',
@@ -30,12 +28,13 @@ async function handleSearch(event) {
   }
   
   currentPage = 1;
-  currentQuery = query;
+  
   clearGallery();
+  hideLoadMoreButton();
   showLoader();
 
   try {
-    const data = await getImagesByQuery(query, currentPage);
+    const data = await getImagesByQuery(currentQuery, currentPage);
       if (data.hits.length === 0) {
         iziToast.error({
           title: 'Error',
@@ -66,9 +65,12 @@ async function handleSearch(event) {
 
 async function handleLoadMore() {
   currentPage += 1;
+  
   showLoader();
+  
   try {
     const data = await getImagesByQuery(currentQuery, currentPage);
+    
     createGallery(data.hits);
 
     const totalPages = Math.ceil(data.totalHits / 15);
@@ -80,6 +82,9 @@ async function handleLoadMore() {
         position: 'topRight',
       });
     }
+
+    scrollToNewImages();
+
   } catch(error) {
     iziToast.error({
       title: 'Error',
@@ -89,4 +94,17 @@ async function handleLoadMore() {
   } finally {
       hideLoader();
     };
+}
+
+function scrollToNewImages() {
+  
+  const galleryItem = document.querySelector('.gallery-item').firstElementChild;
+  if (!galleryItem) {
+    return;
+  }
+  const cardHeight = galleryItem.getBoundingClientRect().height;
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth'
+  });
 }
