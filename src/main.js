@@ -45,10 +45,9 @@ async function handleSearch(event) {
       }
     
       createGallery(data.hits);
-      
-      if (data.totalHits > 15) {
-        showLoadMoreButton();
-      }
+      console.log(data.totalHits);
+      checkLastPage(data.totalHits, currentPage);
+    
   } catch(error) {
     iziToast.error({
       title: 'Error',
@@ -66,6 +65,7 @@ async function handleSearch(event) {
 async function handleLoadMore() {
   currentPage += 1;
   
+  hideLoadMoreButton();
   showLoader();
   
   try {
@@ -73,15 +73,7 @@ async function handleLoadMore() {
     
     createGallery(data.hits);
 
-    const totalPages = Math.ceil(data.totalHits / 15);
-    if (currentPage >= totalPages) {
-      hideLoadMoreButton();
-      iziToast.info({
-        title: 'Info',
-        message: "We're sorry, but you've reached the end of search results.",
-        position: 'topRight',
-      });
-    }
+    checkLastPage(data.totalHits, currentPage);
 
     scrollToNewImages();
 
@@ -96,9 +88,24 @@ async function handleLoadMore() {
     };
 }
 
+function checkLastPage(totalHits, currentPage) {
+  const totalPages = Math.ceil(totalHits / 15);
+  if (currentPage >= totalPages) {
+    hideLoadMoreButton();
+      iziToast.info({
+        title: 'Info',
+        message: "We're sorry, but you've reached the end of search results.",
+        position: 'topRight',
+      });
+  }
+  else {
+    showLoadMoreButton();
+  }
+}
+
 function scrollToNewImages() {
   
-  const galleryItem = document.querySelector('.gallery-item').firstElementChild;
+  const galleryItem = document.querySelector('.gallery-item');
   if (!galleryItem) {
     return;
   }
