@@ -10,6 +10,8 @@ const loadMoreButton = document.querySelector('.load-more');
 let currentPage = 1;
 let currentQuery = '';
 
+let totalPages; ////******* */
+
 searchForm.addEventListener('submit', handleSearch);
 loadMoreButton.addEventListener('click', handleLoadMore);
 
@@ -46,7 +48,8 @@ async function handleSearch(event) {
     
       createGallery(data.hits);
       console.log(data.totalHits);
-      checkLastPage(data.totalHits, currentPage);
+    checkLastPage(data.totalHits, currentPage);
+    totalPages = Math.ceil(data.totalHits/ 15);
     
   } catch(error) {
     iziToast.error({
@@ -114,4 +117,10 @@ function scrollToNewImages() {
     top: cardHeight * 2,
     behavior: 'smooth'
   });
+}
+
+function lastMessage() {
+  if (currentPage === totalPages) {
+    console.log('Кінець колекції');
+  }
 }
